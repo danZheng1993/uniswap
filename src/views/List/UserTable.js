@@ -12,6 +12,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 
+import DetailView from 'views/Detail';
 
 import { parseUserData } from 'store/selectors/users';
 
@@ -22,6 +23,7 @@ const styles = {
 };
 
 class UserTable extends React.Component {
+  state = { userId: '', showDlg: false }
   loadMore = () => {
     const { loading, loadMore } = this.props;
     if (!loading) {
@@ -30,11 +32,16 @@ class UserTable extends React.Component {
   }
 
   selectUser = id => () => {
-    this.props.history.push(`/user-details/?user=${id}`);
+    this.setState({ userId: id, showDlg: true });
+  }
+
+  closeModal = () => {
+    this.setState({ showDlg: false });
   }
 
   render() {
     const { users, classes, loading } = this.props;
+    const { userId, showDlg } = this.state;
     return (
       <Paper className={classes.wrapper}>
         <Table>
@@ -69,6 +76,11 @@ class UserTable extends React.Component {
         {loading && (
           <Typography className={classes.loader} align="center" variant="display1">Loading ...</Typography>
         )}
+        <DetailView
+          userId={userId}
+          open={showDlg}
+          handleClose={this.closeModal}
+        />
       </Paper>
     )
   }

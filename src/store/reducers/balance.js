@@ -1,7 +1,10 @@
 import { handleActions } from 'redux-actions';
 import { produce } from 'immer';
 import { actionTypes } from 'store/actions/balance';
-import { get, set, isEmpty } from 'lodash';
+import { get, set, isEmpty, hasIn } from 'lodash';
+
+import { cache } from 'ApolloAPI/client';
+import { UPDATE_BALANCE } from 'ApolloAPI/mutations';
 
 const initialState = {
   data: {},

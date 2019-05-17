@@ -3,20 +3,28 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { ApolloProvider } from 'react-apollo';
 
-import ApolloClient from 'ApolloAPI/client';
+import createClient from 'ApolloAPI/client';
 import store, { persistor } from 'store';
 import AppRoutes from 'navigation';
 
-function App() {
-  return (
-    <Provider store={store} >
-      <PersistGate persistor={persistor}>
-        <ApolloProvider client={ApolloClient}>
-          <AppRoutes />
-        </ApolloProvider>
-      </PersistGate>
-    </Provider>
-  );
-}
+export default class App extends React.Component {
+  state = { client: null, loaded: false }
 
-export default App;
+  async componentDidMount() {
+    const client = await createClient();
+    this.setState({ client, loaded: true })
+  }
+  render() {
+    const { client, loaded } = this.state;
+    if (!loaded) return <div>Loading ...</div>;
+    return (
+      <Provider store={store} >
+        <PersistGate persistor={persistor}>
+          <ApolloProvider client={client}>
+            <AppRoutes />
+          </ApolloProvider>
+        </PersistGate>
+      </Provider>
+    );
+  }
+}

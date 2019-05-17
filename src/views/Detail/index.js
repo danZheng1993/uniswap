@@ -1,13 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import queryString from 'query-string';
 
 import { withStyles } from '@material-ui/core/styles';
+import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 
 import { ExchangeToken } from 'store/actions/balance';
 import { getUserDetailsSelector } from 'store/selectors/users';
@@ -30,16 +32,8 @@ const styles = {
 class UserDetail extends React.Component {
   state = { selectedBalanceId: '', showDlg: false };
 
-  getUserId = () => {
-    const { location } = this.props;
-    const query = queryString.parse(location.search);
-    return query.user;
-  }
-
   getUserDetails = () => {
-    const { location, getUserDetails } = this.props;
-    const query = queryString.parse(location.search);
-    const userId = query.user;
+    const { userId, getUserDetails } = this.props;
     return getUserDetails(userId);
   }
 
@@ -53,7 +47,7 @@ class UserDetail extends React.Component {
 
   submitTransfer = (buyerId, exchangeAmount, buyerBalanceId) => {
     const { selectedBalanceId } = this.state;
-    const sellerId = this.getUserId();
+    const { userId: sellerId } = this.props;
     this.props.ExchangeToken({
       sellerBalanceId: selectedBalanceId, buyerBalanceId, exchangeAmount, buyerId, sellerId,
     });
@@ -61,14 +55,20 @@ class UserDetail extends React.Component {
   }
 
   render() {
-    const { id, ethBought, ethSold, balances, transactions } = this.getUserDetails();
-    const { classes } = this.props;
+    const { id, ethBought = 0, ethSold = 0, balances = [], transactions = [] } = this.getUserDetails();
+    const { classes, userId, open, handleClose } = this.props;
     const { showDlg, selectedBalanceId } = this.state;
-    const userId = this.getUserId();
     return (
-      <div className={classes.wrapper}>
+      <Dialog
+        fullScreen
+        open={open}
+        onClose={handleClose}
+      >
         <AppBar position="static">
           <Toolbar>
+            <IconButton color="inherit" onClick={handleClose} aria-label="Close">
+              <CloseIcon />
+            </IconButton>
             <div className={classes.idWrapper}>
               <Typography variant="h6" color="inherit">
                 User ID: {id}
@@ -104,7 +104,7 @@ class UserDetail extends React.Component {
           submit={this.submitTransfer}
           handleClose={this.handleClose}
         />
-      </div>
+      </Dialog>
     )
   }
 }

@@ -8,6 +8,7 @@ import { QUERY_USER } from 'ApolloAPI/queries';
 import { AddBalanceData } from 'store/actions/balance';
 import { AddTransactionData } from 'store/actions/transaction';
 import { AddData } from 'store/actions/users';
+import { getLastUserPointer } from 'store/selectors/users';
 import { parseUserData } from 'utils/data';
 
 import UserTable from './UserTable';
@@ -47,8 +48,8 @@ class ListView extends React.Component {
       <Query
         query={QUERY_USER}
         variables={{ id: '0' }}
-        fetchPolicy="cache-and-network"
         onCompleted={this.updateStore}
+        fetchPolicy="cache-first"
       >
         {({ loading, data, fetchMore }) => (
           <UserTable loadMore={this.loadMore(fetchMore, data)} loading={loading} />
@@ -58,10 +59,12 @@ class ListView extends React.Component {
   }
 }
 
+const mapStateToProps = (state) => ({ lastPointer: getLastUserPointer(state) });
+
 const mapDispatchToProps = {
   AddBalanceData,
   AddTransactionData,
   AddData
 };
 
-export default connect(null, mapDispatchToProps)(ListView);
+export default connect(mapStateToProps, mapDispatchToProps)(ListView);

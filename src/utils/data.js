@@ -1,4 +1,4 @@
-import { set, get } from 'lodash';
+import { set, get, isArray } from 'lodash';
 
 export const parseUserData = users => {
   const usersData = {};
@@ -20,10 +20,19 @@ export const parseUserData = users => {
       ethBought += parseFloat(get(balance, 'ethBought', '0'));
       ethSold += parseFloat(get(balance, 'ethSold', '0'));
     });
-    txs.forEach(tx => {
-      transactions.push(tx.id);
-      set(transactionData, tx.id, tx);
-    })
+    if (isArray(txs)) {
+      txs.forEach(tx => {
+        transactions.push(tx.id);
+        set(transactionData, tx.id, tx);
+      })
+    } else {
+      const { type } =txs;
+      const txArray = get(txs, type);
+      txArray.forEach(tx => {
+        transactions.push(tx.id);
+        set(transactionData, tx.id, tx);
+      })
+    }
     set(usersData, id, { id, ethBought, ethSold, balances, transactions });
   });
   return { usersData, balanceData, transactionData };

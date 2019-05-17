@@ -25,6 +25,7 @@ function* exchangeBalance(action) {
     timestamp: '',
     tokenSymbol: '',
     ethAmount: 0,
+    __typename: 'Transaction',
   };
   const receivingTransaction = {
     id: uniqid(),
@@ -38,6 +39,7 @@ function* exchangeBalance(action) {
     timestamp: '',
     tokenSymbol: '',
     ethAmount: 0,
+    __typename: 'Transaction',
   };
   yield put({
     type: transactionActionTypes.CREATE_TRANSACTION,

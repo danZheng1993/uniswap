@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import InfiniteLoader from 'react-infinite-loader';
+import { withRouter } from 'react-router-dom';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -25,6 +26,10 @@ class UserTable extends React.Component {
     }
   }
 
+  selectUser = id => () => {
+    this.props.history.push(`/user-details/?user=${id}`);
+  }
+
   render() {
     const { users } = this.props;
     return (
@@ -40,7 +45,7 @@ class UserTable extends React.Component {
           </TableHead>
           <TableBody>
             {users.map(user => (
-              <TableRow key={user.id}>
+              <TableRow key={user.id} style={{ cursor: 'pointer' }} onClick={this.selectUser(user.id)}>
                 <TableCell component="th" scope="row">
                   {user.id}
                 </TableCell>
@@ -70,4 +75,4 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = { FetchData };
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserTable);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(UserTable));

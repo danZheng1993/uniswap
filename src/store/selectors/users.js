@@ -29,10 +29,18 @@ export const parseUserData = createSelector(
   }
 );
 
-// export const getUserDetails = userId => createSelector(
-//   userDataSelector, getBalances, getTransactions,
-//   (userData, getBalances, getTransactions) => {
-//     const userInfo = get(userData, userId);
-//     const 
-//   }
-// )
+export const getUserDetailsSelector = createSelector(
+  userDataSelector, getBalances, getTransactions,
+  (userData, balanceData, transactionData) => (userId) => {
+    const userInfo = get(userData, userId);
+    const balances = get(userInfo, 'balances');
+    const txs = get(userInfo, 'transactions');
+    const balanceDetails = balances.map(balanceId => get(balanceData, balanceId));
+    const txDetails = txs.map(txId => get(transactionData, txId));
+    return {
+      ...userInfo,
+      balances: balanceDetails,
+      transactions: txDetails,
+    }
+  }
+)

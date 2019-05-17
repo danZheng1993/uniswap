@@ -21,7 +21,8 @@
     "redux": "^4.0.1",
     "redux-actions": "^2.6.5",
     "redux-saga": "^1.0.2",
-    "reselect": "^4.0.0"
+    "reselect": "^4.0.0",
+    "uniqid": "^5.0.3"
   },
   "scripts": {
     "start": "react-scripts start",

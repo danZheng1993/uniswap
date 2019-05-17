@@ -7,11 +7,10 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
 
 
 import { actionTypes, FetchData } from 'store/actions/users';
-import { userSelector } from 'store/selectors/users';
+import { parseUserData } from 'store/selectors/users';
 
 class UserTable extends React.Component {
   componentDidMount() {
@@ -34,6 +33,9 @@ class UserTable extends React.Component {
           <TableHead>
             <TableRow>
               <TableCell>ID</TableCell>
+              <TableCell>Tokens Bought</TableCell>
+              <TableCell>Tokens Sold</TableCell>
+              <TableCell>Current Balance</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -41,6 +43,15 @@ class UserTable extends React.Component {
               <TableRow key={user.id}>
                 <TableCell component="th" scope="row">
                   {user.id}
+                </TableCell>
+                <TableCell component="th" scope="row">
+                  {user.tokensBought}
+                </TableCell>
+                <TableCell component="th" scope="row">
+                  {user.tokensSold}
+                </TableCell>
+                <TableCell component="th" scope="row">
+                  {user.balance}
                 </TableCell>
               </TableRow>
             ))}
@@ -53,7 +64,7 @@ class UserTable extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  users: userSelector(state),
+  users: parseUserData(state),
   status: state.users.status,
 });
 

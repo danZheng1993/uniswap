@@ -1,9 +1,9 @@
 import { all, fork } from 'redux-saga/effects';
 
-import UserSaga from './users';
+import DataSaga from './data';
 
 export default function* mainSaga() {
   yield all([
-    fork(UserSaga),
+    fork(DataSaga),
   ]);
 }

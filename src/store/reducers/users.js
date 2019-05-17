@@ -11,22 +11,16 @@ const initialState = {
 
 export default handleActions(
   {
-    [actionTypes.FETCH_DATA]: (state) =>
-      produce(state, draft => {
-        draft.status = actionTypes.FETCH_DATA;
-        draft.error = null;
-      }),
-    [actionTypes.FETCH_DATA_SUCCESS]: (state, action) =>
+    [actionTypes.ADD_DATA]: (state, action) =>
       produce(state, draft => {
         const { payload } = action;
-        draft.data = {...state.data, ...payload};
+        draft.data = {...state.data};
+        const ids = Object.keys(payload);
+        ids.forEach(id => {
+          set(draft.data, id, get(payload, id));
+        })
         draft.status = actionTypes.FETCH_DATA_SUCCESS;
         draft.error = null;
-      }),
-    [actionTypes.FETCH_DATA_FAILURE]: (state, action) =>
-      produce(state, draft => {
-        draft.status = actionTypes.FETCH_DATA_FAILURE;
-        draft.error = action.payload;
       }),
     [actionTypes.ADD_TRANSACTION_HISTORY]: (state, action) =>
       produce(state, draft => {

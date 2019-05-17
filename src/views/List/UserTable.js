@@ -13,7 +13,6 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 
 
-import { actionTypes, FetchData } from 'store/actions/users';
 import { parseUserData } from 'store/selectors/users';
 
 const styles = {
@@ -23,15 +22,10 @@ const styles = {
 };
 
 class UserTable extends React.Component {
-  componentDidMount() {
-    const { client, FetchData } = this.props;
-    FetchData(client);
-  }
-
   loadMore = () => {
-    const { status, client, FetchData } = this.props;
-    if (status !== actionTypes.FETCH_DATA) {
-      FetchData(client);
+    const { loading, loadMore } = this.props;
+    if (!loading) {
+      loadMore();
     }
   }
 
@@ -40,7 +34,7 @@ class UserTable extends React.Component {
   }
 
   render() {
-    const { users, classes, status } = this.props;
+    const { users, classes, loading } = this.props;
     return (
       <Paper className={classes.wrapper}>
         <Table>
@@ -72,7 +66,7 @@ class UserTable extends React.Component {
           </TableBody>
         </Table>
         <InfiniteLoader onVisited={this.loadMore} />
-        {status === actionTypes.FETCH_DATA && (
+        {loading && (
           <Typography className={classes.loader} align="center" variant="display1">Loading ...</Typography>
         )}
       </Paper>
@@ -85,6 +79,4 @@ const mapStateToProps = (state) => ({
   status: state.users.status,
 });
 
-const mapDispatchToProps = { FetchData };
-
-export default withStyles(styles)(withRouter(connect(mapStateToProps, mapDispatchToProps)(UserTable)));
+export default withStyles(styles)(withRouter(connect(mapStateToProps)(UserTable)));

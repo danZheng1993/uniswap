@@ -1,38 +1,11 @@
-import { takeEvery, call, select, put } from 'redux-saga/effects';
+import { takeEvery, select, put } from 'redux-saga/effects';
 import { get } from 'lodash';
 import uniqid from 'uniqid';
-
-import { QUERY_USER } from 'ApolloAPI/queries';
 
 import { actionTypes as userActionTypes } from 'store/actions/users';
 import { actionTypes as balanceActionTypes } from 'store/actions/balance';
 import { actionTypes as transactionActionTypes } from 'store/actions/transaction';
-import { getLastUserPointer } from 'store/selectors/users';
 import { getBalanceInfo } from 'store/selectors/balance';
-
-import { parseUserData } from 'utils/data';
-
-function* fetchUserData(action) {
-  const client = action.payload;
-  if (client) {
-    try {
-      const queryPoint = yield select(getLastUserPointer);
-      const request = {
-        query: QUERY_USER,
-        variables: { id: queryPoint }
-      }
-      const result = yield call(client.query, request);
-      const { usersData, balanceData, transactionData } = parseUserData(get(result, 'data.users'));
-      yield put({ type: userActionTypes.FETCH_DATA_SUCCESS, payload: usersData });
-      yield put({ type: balanceActionTypes.ADD_BALANCE_DATA, payload: balanceData });
-      yield put({ type: transactionActionTypes.ADD_TRANSACTION_DATA, payload: transactionData });
-    } catch (err) {
-      yield put({ type: userActionTypes.FETCH_DATA_FAILURE, payload: err });
-    }
-  } else {
-    yield put({ type: userActionTypes.FETCH_DATA_FAILURE, payload: { reason: 'client not configured' } });
-  }
-}
 
 function* exchangeBalance(action) {
   const { sellerBalanceId, buyerBalanceId, exchangeAmount, buyerId, sellerId } = action.payload;
@@ -85,6 +58,5 @@ function* exchangeBalance(action) {
 }
 
 export default function* DataSaga() {
-  yield takeEvery(userActionTypes.FETCH_DATA, fetchUserData);
   yield takeEvery(balanceActionTypes.EXCHANGE_TOKEN, exchangeBalance);
 }

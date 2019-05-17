@@ -12,7 +12,11 @@ export default handleActions(
     [actionTypes.ADD_BALANCE_DATA]: (state, action) =>
       produce(state, draft => {
         const { payload } = action;
-        draft.data = {...state.data, ...payload};
+        draft.data = {...state.data};
+        const ids = Object.keys(payload);
+        ids.forEach(id => {
+          set(draft.data, id, get(payload, id));
+        })
       }),
     [actionTypes.EXCHANGE_TOKEN]: (state, action) =>
       produce(state, draft => {

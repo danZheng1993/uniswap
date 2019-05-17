@@ -23,7 +23,7 @@ export const parseUserData = createSelector(
       const user = get(userData, id);
       return {
         ...user,
-        balance: user.tokensBought - user.tokensSold
+        balance: user.ethBought - user.ethSold
       };
     })
   }
@@ -43,4 +43,13 @@ export const getUserDetailsSelector = createSelector(
       transactions: txDetails,
     }
   }
-)
+);
+
+export const getSelectableUsers = createSelector(
+  userDataSelector,
+  userData => userId => {
+    const userIds = Object.keys(userData);
+    const selectableIds = userIds.filter(uId => uId !== userId);
+    return selectableIds.map(uId => get(userData, uId));
+  }
+);

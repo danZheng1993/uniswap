@@ -17,15 +17,19 @@ export default handleActions(
     [actionTypes.EXCHANGE_TOKEN]: (state, action) =>
       produce(state, draft => {
         const { payload: { buyerBalanceId, sellerBalanceId, exchangeAmount } } = action;
-        const buyerBalance = {...get(state, buyerBalanceId, {})};
-        let buyerBoughtToken = get(buyerBalance, 'tokensBought', 0);
-        const sellerBalance = {...get(state, sellerBalanceId, {})};
-        let sellerSoldToken = get(sellerBalance, 'tokensSold', 0);
+        const buyerBalance = {...get(state.data, buyerBalanceId, {})};
+        let buyerBoughtToken = get(buyerBalance, 'ethBought', 0);
+        const sellerBalance = {...get(state.data, sellerBalanceId, {})};
+        let sellerSoldToken = get(sellerBalance, 'ethSold', 0);
         if (!isEmpty(buyerBalance) && !isEmpty(sellerBalance)) {
+          const tempData = {...state.data};
           buyerBoughtToken += exchangeAmount;
           sellerSoldToken += exchangeAmount;
-          set(buyerBalance, 'tokensBought', buyerBoughtToken);
-          set(sellerBalance, 'tokensSold', sellerSoldToken);
+          set(buyerBalance, 'ethBought', buyerBoughtToken);
+          set(sellerBalance, 'ethSold', sellerSoldToken);
+          set(tempData, buyerBalance.id, buyerBalance);
+          set(tempData, sellerBalance.id, sellerBalance);
+          draft.data = tempData;
         }
       }),
   },

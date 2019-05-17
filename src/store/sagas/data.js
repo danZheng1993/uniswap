@@ -35,11 +35,9 @@ function* fetchUserData(action) {
 }
 
 function* exchangeBalance(action) {
-  const { sellerBalanceId, buyerBalanceId, exchangeAmount } = action.payload;
+  const { sellerBalanceId, buyerBalanceId, exchangeAmount, buyerId, sellerId } = action.payload;
   const sellerBalance = yield select(getBalanceInfo, sellerBalanceId);
   const buyerBalance = yield select(getBalanceInfo, buyerBalanceId);
-  const sellerId = get(sellerBalance, 'userAddress');
-  const buyerId = get(buyerBalance, 'userAddress');
   const sellerExchangeAddress = get(sellerBalance, 'exchangeAddress');
   const buyerExchangeAddress = get(buyerBalance, 'exchangeAddress');
   const sendingTransaction = {
@@ -78,11 +76,11 @@ function* exchangeBalance(action) {
   });
   yield put({
     type: userActionTypes.ADD_TRANSACTION_HISTORY,
-    payload: { txId: sendingTransaction.id, userId: sellerId }
+    payload: { txId: sendingTransaction.id, userId: sellerId, amount: -exchangeAmount }
   })
   yield put({
     type: userActionTypes.ADD_TRANSACTION_HISTORY,
-    payload: { txId: receivingTransaction.id, userId: buyerId }
+    payload: { txId: receivingTransaction.id, userId: buyerId, amount: exchangeAmount }
   })
 }
 

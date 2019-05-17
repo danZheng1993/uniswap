@@ -6,25 +6,25 @@ export const parseUserData = users => {
   const transactionData = {};
   users.forEach(user => {
     const { id, exchangeBalances, txs } = user;
-    let tokensBought = 0;
-    let tokensSold = 0;
+    let ethBought = 0;
+    let ethSold = 0;
     const balances = [];
     const transactions = [];
     exchangeBalances.forEach(balance => {
       balances.push(balance.id);
       set(balanceData, balance.id, {
         ...balance,
-        tokensBought: parseFloat(get(balance, 'tokensBought', '0')),
-        tokensSold: parseFloat(get(balance, 'tokensSold', '0')),
+        ethBought: parseFloat(get(balance, 'ethBought', '0')),
+        ethSold: parseFloat(get(balance, 'ethSold', '0')),
       });
-      tokensBought += parseFloat(get(balance, 'tokensBought', '0'));
-      tokensSold += parseFloat(get(balance, 'tokensSold', '0'));
+      ethBought += parseFloat(get(balance, 'ethBought', '0'));
+      ethSold += parseFloat(get(balance, 'ethSold', '0'));
     });
     txs.forEach(tx => {
       transactions.push(tx.id);
       set(transactionData, tx.id, tx);
     })
-    set(usersData, id, { id, tokensBought, tokensSold, balances, transactions });
+    set(usersData, id, { id, ethBought, ethSold, balances, transactions });
   });
   return { usersData, balanceData, transactionData };
 }

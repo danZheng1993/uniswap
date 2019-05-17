@@ -6,3 +6,4 @@ export const actionTypes = {
 };
 
 export const AddBalanceData = createAction(actionTypes.ADD_BALANCE_DATA);
+export const ExchangeToken = createAction(actionTypes.EXCHANGE_TOKEN);

@@ -15,8 +15,8 @@ query ($id: String!){
       uniTokenBalance
       ethBought
       ethSold
-      tokensBought
-      tokensSold
+      ethBought
+      ethSold
       ethFeesPaid
     	tokenFeesPaid
       ethFeesInUSD

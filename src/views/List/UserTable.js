@@ -3,15 +3,24 @@ import { connect } from 'react-redux';
 import InfiniteLoader from 'react-infinite-loader';
 import { withRouter } from 'react-router-dom';
 
+import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import Typography from '@material-ui/core/Typography';
+import Paper from '@material-ui/core/Paper';
 
 
 import { actionTypes, FetchData } from 'store/actions/users';
 import { parseUserData } from 'store/selectors/users';
+
+const styles = {
+  wrapper: { margin: 20 },
+  loader: { marginBottom: 20 },
+  tableRow: { cursor: 'pointer' },
+};
 
 class UserTable extends React.Component {
   componentDidMount() {
@@ -31,29 +40,29 @@ class UserTable extends React.Component {
   }
 
   render() {
-    const { users } = this.props;
+    const { users, classes, status } = this.props;
     return (
-      <div>
+      <Paper className={classes.wrapper}>
         <Table>
           <TableHead>
             <TableRow>
               <TableCell>ID</TableCell>
-              <TableCell>Tokens Bought</TableCell>
-              <TableCell>Tokens Sold</TableCell>
+              <TableCell>ETH Bought</TableCell>
+              <TableCell>ETH Sold</TableCell>
               <TableCell>Current Balance</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {users.map(user => (
-              <TableRow key={user.id} style={{ cursor: 'pointer' }} onClick={this.selectUser(user.id)}>
+              <TableRow className={classes.tableRow} key={user.id} onClick={this.selectUser(user.id)}>
                 <TableCell component="th" scope="row">
                   {user.id}
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  {user.tokensBought}
+                  {user.ethBought}
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  {user.tokensSold}
+                  {user.ethSold}
                 </TableCell>
                 <TableCell component="th" scope="row">
                   {user.balance}
@@ -63,7 +72,10 @@ class UserTable extends React.Component {
           </TableBody>
         </Table>
         <InfiniteLoader onVisited={this.loadMore} />
-      </div>
+        {status === actionTypes.FETCH_DATA && (
+          <Typography className={classes.loader} align="center" variant="display1">Loading ...</Typography>
+        )}
+      </Paper>
     )
   }
 }
@@ -75,4 +87,4 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = { FetchData };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(UserTable));
+export default withStyles(styles)(withRouter(connect(mapStateToProps, mapDispatchToProps)(UserTable)));

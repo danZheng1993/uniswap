@@ -2,9 +2,9 @@ import { handleActions } from 'redux-actions';
 import { produce } from 'immer';
 import { actionTypes } from 'store/actions/transaction';
 import { set, get } from 'lodash';
-import { gql } from 'apollo-boost';
 
 import { cache } from 'ApolloAPI/client';
+import { UpdateUser } from 'ApolloAPI/fragments';
 
 const initialState = {
   data: {},
@@ -31,14 +31,9 @@ export default handleActions(
         draft.data = newData;
         cache.writeFragment({
           id: user,
-          fragment: gql`
-            fragment myUser on User {
-              txs
-            }
-          `,
+          fragment: UpdateUser,
           data: { __typename: 'User', txs }
         });
-        console.log(cache);
       }),
   },
   initialState
